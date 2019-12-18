@@ -1,1 +1,1 @@
-FROM docker.io/seldonio/seldon-core-operator:0.4.1
+FROM metacontroller/metacontroller:v0.3.0
