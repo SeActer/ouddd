@@ -1,1 +1,1 @@
-FROM argoproj/argoui:v2.3.0
+FROM docker.io/seldonio/seldon-core-operator:0.4.1
