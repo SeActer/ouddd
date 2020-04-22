@@ -1,1 +1,1 @@
-FROM k8s.gcr.io/kube-proxy:v1.15.1
+FROM quay.io/coreos/flannel:v0.12.0-amd64
