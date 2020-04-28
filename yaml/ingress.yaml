@@ -1,0 +1,40 @@
+kubectl create secret tls ingress-secret --cert=tls.crt --key=tls.key
+
+
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: ingress-test
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+spec:
+  tls:
+  - hosts: 
+    - test.tomcat.com
+    secretName: ingress-secret
+  rules:
+  - host: test.tomcat.com
+    http:
+      paths:
+      - path:
+        backend:
+          serviceName: tomcat
+          servicePort: 8080
+  - host: test.apache.ingress
+    http:
+      paths:
+      - path: /foo
+        backend:
+          serviceName: foo-apache
+          servicePort: 80
+      - path: /bar
+        backend:
+          serviceName: bar-apache
+          servicePort: 80
+  - host: test.nginx.ingress
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: my-nginx
+          servicePort: 80
