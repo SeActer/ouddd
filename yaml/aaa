@@ -1,0 +1,240 @@
+kube-apiserver --tls-cipher-suites=TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305 
+--bind-address=0.0.0.0 
+--profiling=false 
+--storage-backend=etcd3 
+--kubelet-client-key=/etc/kubernetes/ssl/kube-apiserver-key.pem 
+--tls-private-key-file=/etc/kubernetes/ssl/kube-apiserver-key.pem 
+--insecure-port=0 
+--secure-port=6443 
+--etcd-prefix=/registry --enable-admission-plugins=NamespaceLifecycle,LimitRanger,ServiceAccount,TaintNodesByCondition,Priority,DefaultTolerationSeconds,DefaultStorageClass,PersistentVolumeClaimResize,MutatingAdmissionWebhook,ValidatingAdmissionWebhook,ResourceQuota,NodeRestriction 
+--client-ca-file=/etc/kubernetes/ssl/kube-ca.pem 
+--service-node-port-range=33000-33200 
+--tls-cert-file=/etc/kubernetes/ssl/kube-apiserver.pem 
+--runtime-config=authorization.k8s.io/v1beta1=true 
+--feature-gates=ExpandPersistentVolumes=true 
+--etcd-cafile=/etc/kubernetes/ssl/kube-ca.pem 
+--etcd-certfile=/etc/kubernetes/ssl/kube-node.pem 
+--kubelet-client-certificate=/etc/kubernetes/ssl/kube-apiserver.pem 
+--requestheader-group-headers=X-Remote-Group 
+--proxy-client-key-file=/etc/kubernetes/ssl/kube-apiserver-proxy-client-key.pem 
+--requestheader-client-ca-file=/etc/kubernetes/ssl/kube-apiserver-requestheader-ca.pem 
+--requestheader-username-headers=X-Remote-User 
+--service-account-lookup=true 
+--cloud-provider=
+--etcd-servers=https://172.26.37.130:2379,https://172.26.37.131:2379,https://172.26.37.132:2379
+--requestheader-allowed-names=kube-apiserver-proxy-client
+--requestheader-extra-headers-prefix=X-Remote-Extra- 
+--service-account-key-file=/etc/kubernetes/ssl/kube-service-account-token-key.pem 
+--service-cluster-ip-range=10.43.0.0/16 
+--authorization-mode=Node,RBAC 
+--advertise-address=172.26.37.130 
+--allow-privileged=true 
+--anonymous-auth=false 
+--kubelet-preferred-address-types=InternalIP,ExternalIP,Hostname 
+--etcd-keyfile=/etc/kubernetes/ssl/kube-node-key.pem 
+--proxy-client-cert-file=/etc/kubernetes/ssl/kube-apiserver-proxy-client.pem
+
+
+
+kube-controller-manager 
+--leader-elect=true 
+--pod-eviction-timeout=5m0s 
+--service-cluster-ip-range=10.43.0.0/16 
+--feature-gates=ExpandPersistentVolumes=true 
+--configure-cloud-routes=false 
+--node-monitor-grace-period=40s 
+--cloud-provider= 
+--kubeconfig=/etc/kubernetes/ssl/kubecfg-kube-controller-manager.yaml 
+--root-ca-file=/etc/kubernetes/ssl/kube-ca.pem 
+--service-account-private-key-file=/etc/kubernetes/ssl/kube-service-account-token-key.pem 
+--allow-untagged-cloud=true 
+--profiling=false 
+--terminated-pod-gc-threshold=1000 
+--address=0.0.0.0 
+--allocate-node-cidrs=true 
+--enable-hostpath-provisioner=false 
+--v=2 
+--cluster-cidr=10.42.0.0/16 
+--use-service-account-credentials=true
+
+cat /etc/kubernetes/ssl/kubecfg-kube-controller-manager.yaml
+apiVersion: v1
+kind: Config
+clusters:
+- cluster:
+    api-version: v1
+    certificate-authority: /etc/kubernetes/ssl/kube-ca.pem
+    server: "https://127.0.0.1:6443"
+  name: "local"
+contexts:
+- context:
+    cluster: "local"
+    user: "kube-controller-manager-local"
+  name: "local"
+current-context: "local"
+users:
+- name: "kube-controller-manager-local"
+  user:
+    client-certificate: /etc/kubernetes/ssl/kube-controller-manager.pem
+    client-key: /etc/kubernetes/ssl/kube-controller-manager-key.pem
+
+
+kube-scheduler 
+--profiling=false 
+--kubeconfig=/etc/kubernetes/ssl/kubecfg-kube-scheduler.yaml 
+--leader-elect=true 
+--v=2 
+--address=0.0.0.0
+cat /etc/kubernetes/ssl/kubecfg-kube-scheduler.yaml
+apiVersion: v1
+kind: Config
+clusters:
+- cluster:
+    api-version: v1
+    certificate-authority: /etc/kubernetes/ssl/kube-ca.pem
+    server: "https://127.0.0.1:6443"
+  name: "local"
+contexts:
+- context:
+    cluster: "local"
+    user: "kube-scheduler-local"
+  name: "local"
+current-context: "local"
+users:
+- name: "kube-scheduler-local"
+  user:
+    client-certificate: /etc/kubernetes/ssl/kube-scheduler.pem
+    client-key: /etc/kubernetes/ssl/kube-scheduler-key.pem
+
+kubelet 
+--enforce-node-allocatable= 
+--cloud-provider= 
+--cluster-dns=10.43.0.10 
+--authorization-mode=Webhook 
+--cni-conf-dir=/etc/cni/net.d 
+--authentication-token-webhook=true 
+--hostname-override=172.26.37.130 
+--address=0.0.0.0 
+--fail-swap-on=false --tls-cipher-suites=TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305 
+--enable-controller-attach-detach=false 
+--streaming-connection-idle-timeout=30m 
+--cni-bin-dir=/opt/cni/bin 
+--event-qps=0 
+--resolv-conf=/etc/resolv.conf 
+--volume-plugin-dir=/var/lib/kubelet/volumeplugins 
+--v=2 
+--kubeconfig=/etc/kubernetes/ssl/kubecfg-kube-node.yaml 
+--feature-gates=ExpandPersistentVolumes=true 
+--cgroups-per-qos=True 
+--port=10250 
+--image-pull-progress-deadline=30m 
+--network-plugin=cni 
+--read-only-port=10255 
+--cluster-domain=cluster.local 
+--pod-infra-container-image=172.26.37.149/library/rancher/pause:3.1 
+--root-dir=/var/lib/kubelet 
+--anonymous-auth=false 
+--client-ca-file=/etc/kubernetes/ssl/kube-ca.pem 
+--make-iptables-util-chains=true 
+--cgroup-driver=cgroupfs
+
+/etc/kubernetes/ssl/kubecfg-kube-node.yaml
+apiVersion: v1
+kind: Config
+clusters:
+- cluster:
+    api-version: v1
+    certificate-authority: /etc/kubernetes/ssl/kube-ca.pem
+    server: "https://127.0.0.1:6443"
+  name: "local"
+contexts:
+- context:
+    cluster: "local"
+    user: "kube-node-local"
+  name: "local"
+current-context: "local"
+users:
+- name: "kube-node-local"
+  user:
+    client-certificate: /etc/kubernetes/ssl/kube-node.pem
+    client-key: /etc/kubernetes/ssl/kube-node-key.pem
+
+
+
+
+kube-proxy 
+--v=2 
+--healthz-bind-address=127.0.0.1 
+--cluster-cidr=10.42.0.0/16 
+--hostname-override=172.26.37.130 
+--kubeconfig=/etc/kubernetes/ssl/kubecfg-kube-proxy.yaml
+
+cat /etc/kubernetes/ssl/kubecfg-kube-proxy.yaml
+apiVersion: v1
+kind: Config
+clusters:
+- cluster:
+    api-version: v1
+    certificate-authority: /etc/kubernetes/ssl/kube-ca.pem
+    server: "https://127.0.0.1:6443"
+  name: "local"
+contexts:
+- context:
+    cluster: "local"
+    user: "kube-proxy-local"
+  name: "local"
+current-context: "local"
+users:
+- name: "kube-proxy-local"
+  user:
+    client-certificate: /etc/kubernetes/ssl/kube-proxy.pem
+    client-key: /etc/kubernetes/ssl/kube-proxy-key.pem
+
+
+
+
+sh-4.4# cat nginx.conf 
+error_log stderr notice;
+
+worker_processes auto;
+events {
+  multi_accept on;
+  use epoll;
+  worker_connections 1024;
+}
+
+stream {
+        upstream kube_apiserver {
+            
+            server 172.26.37.130:6443;
+            
+            server 172.26.37.131:6443;
+            
+            server 172.26.37.132:6443;
+            
+        }
+
+        server {
+            listen        6443;
+            proxy_pass    kube_apiserver;
+            proxy_timeout 30;
+            proxy_connect_timeout 2s;
+
+        }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
