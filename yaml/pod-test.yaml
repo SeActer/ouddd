@@ -4,6 +4,9 @@ metadata:
   name: app
 spec:
   replicas: 10
+  selector:
+    matchLabels:
+      run: app
   template:
     metadata:
       labels:
