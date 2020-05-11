@@ -1,0 +1,18 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app
+spec:
+  replicas: 10
+  template:
+    metadata:
+      labels:
+        run: app
+    spec:
+      containers:
+      - name: app
+        image: busybox
+        args:
+        - /bin/sh
+        - -c
+        - sleep 360000
