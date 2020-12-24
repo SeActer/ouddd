@@ -1,10 +1,10 @@
 # This my first nginx Dockerfile
 # Version 1.0
+FROM gcr.io/distroless/static:nonroot
+# FROM busybox
 
-FROM busybox
-
-RUN mkdir -p /data/html && echo "busybox v3" >> /data/html/index.html
-CMD ["/bin/httpd","-f","-h","/data/html"]
+# RUN mkdir -p /data/html && echo "busybox v3" >> /data/html/index.html
+# CMD ["/bin/httpd","-f","-h","/data/html"]
 
 # # Base images 基础镜像
 # #FROM centos
